@@ -7,14 +7,14 @@ function assignRoom(io, socket) {
       socket.join(user._id);
       await addToOnlineUser(user, socket.id);
       user["event"] = "join";
-      redisClient.PUBLISH("message", JSON.stringify(user));
+      redisClient.PUBLISH("online_status", JSON.stringify(user));
     });
 
     socket.on("disconnect", async () => {
       const user = await removeOnlineUser(socket.id);
       if (user) {
         user["event"] = "leave";
-        redisClient.PUBLISH("message", JSON.stringify(user));
+        redisClient.PUBLISH("online_status", JSON.stringify(user));
       }
     });
   } catch (error) {

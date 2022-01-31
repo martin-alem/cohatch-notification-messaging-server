@@ -9,6 +9,8 @@ import redisClient from "./database/redis.js";
 
 import onlineUsersRouter from "./routes/onlineUsersRouter.js";
 import assignRoom from "./controllers/assignRoom.js";
+import privateChat from "./controllers/privateChat.js";
+import handleOnlineStatus from "./controllers/handleOnlineStatus.js";
 import handleMessages from "./controllers/handleMessages.js";
 
 //Read environment variable from .env
@@ -44,6 +46,7 @@ const io = new Server(httpServer, {
 
 const onConnection = socket => {
   assignRoom(io, socket);
+  privateChat(io, socket);
 };
 
 io.on("connection", onConnection);
@@ -51,6 +54,7 @@ io.on("connection", onConnection);
 //Subscribe to redis server
 const subscriber = redisClient.duplicate();
 subscriber.connect();
+subscriber.SUBSCRIBE("online_status", data => handleOnlineStatus(io, data));
 subscriber.SUBSCRIBE("message", data => handleMessages(io, data));
 
 //Online users
