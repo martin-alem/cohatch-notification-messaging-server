@@ -4,7 +4,7 @@ import authMiddleware from "./../middleware/authMiddleware.js";
 
 const recentChatRouter = express.Router();
 
-recentChatRouter.get("/:userId", [authMiddleware, getRecentChats]);
+recentChatRouter.get("/:userId", [getRecentChats]);
 
 //Catch all exceptions thrown by this router
 recentChatRouter.use((error, req, res, next) => {

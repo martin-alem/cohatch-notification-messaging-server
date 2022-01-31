@@ -4,7 +4,7 @@ import authMiddleware from "./../middleware/authMiddleware.js";
 
 const messagesRouter = express.Router();
 
-messagesRouter.get("/:senderLastName/:recipientLastName", [authMiddleware, getMessages]);
+messagesRouter.get("/:senderLastName/:recipientLastName", [getMessages]);
 
 //Catch all exceptions thrown by this router
 messagesRouter.use((error, req, res, next) => {

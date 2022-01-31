@@ -4,7 +4,7 @@ import authMiddleware from "./../middleware/authMiddleware.js";
 
 const onlineUsersRouter = express.Router();
 
-onlineUsersRouter.get("/", [authMiddleware, getOnlineUsersController]);
+onlineUsersRouter.get("/", [getOnlineUsersController]);
 
 //Catch all exceptions thrown by this router
 onlineUsersRouter.use((error, req, res, next) => {
