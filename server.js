@@ -9,16 +9,12 @@ import redisClient from "./database/redis.js";
 
 import onlineUsersRouter from "./routes/onlineUsersRouter.js";
 import assignRoom from "./controllers/assignRoom.js";
+import handleMessages from "./controllers/handleMessages.js";
 
 //Read environment variable from .env
 dotenv.config();
 
 const app = express();
-
-//Subscribe to redis server
-const subscriber = redisClient.duplicate();
-subscriber.connect();
-subscriber.SUBSCRIBE("message", data => console.log(data));
 
 //Express Cors Configuration
 const corsOptions = {
@@ -33,7 +29,6 @@ app.use(cookieParser());
 app.enable("trust proxy");
 app.use(cors(corsOptions));
 app.use(express.json());
-
 
 //Setting up socket IO server
 const httpServer = createServer(app);
@@ -51,11 +46,15 @@ const onConnection = socket => {
   assignRoom(io, socket);
 };
 
-io.on( "connection", onConnection );
+io.on("connection", onConnection);
 
+//Subscribe to redis server
+const subscriber = redisClient.duplicate();
+subscriber.connect();
+subscriber.SUBSCRIBE("message", data => handleMessages(io, data));
 
 //Online users
-app.use("/api/v1/online_users", onlineUsersRouter)
+app.use("/api/v1/online_users", onlineUsersRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req, res) => {
