@@ -54,10 +54,12 @@ const onConnection = socket => {
 io.on("connection", onConnection);
 
 //Subscribe to redis server
-const subscriber = redisClient.duplicate();
-subscriber.connect();
-subscriber.SUBSCRIBE("online_status", data => handleOnlineStatus(io, data));
-subscriber.SUBSCRIBE("message", data => handleMessages(io, data));
+(async function () {
+  const subscriber = redisClient.duplicate();
+  await subscriber.connect();
+  await subscriber.SUBSCRIBE("online_status", data => handleOnlineStatus(io, data));
+  await subscriber.SUBSCRIBE("message", data => handleMessages(io, data));
+})();
 
 //Online users
 app.use("/api/v1/online_users", onlineUsersRouter);
