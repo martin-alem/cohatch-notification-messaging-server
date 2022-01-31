@@ -12,6 +12,8 @@ import assignRoom from "./controllers/assignRoom.js";
 import privateChat from "./controllers/privateChat.js";
 import handleOnlineStatus from "./controllers/handleOnlineStatus.js";
 import handleMessages from "./controllers/handleMessages.js";
+import messagesRouter from "./routes/messageRouter.js";
+import chatRouter from "./routes/chatsRouter.js";
 
 //Read environment variable from .env
 dotenv.config();
@@ -59,6 +61,12 @@ subscriber.SUBSCRIBE("message", data => handleMessages(io, data));
 
 //Online users
 app.use("/api/v1/online_users", onlineUsersRouter);
+
+//Messages endpoint
+app.use("/api/v1/messages", messagesRouter);
+
+//Recent endpoint
+app.use("/api/v1/recent_chats", chatRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req, res) => {
