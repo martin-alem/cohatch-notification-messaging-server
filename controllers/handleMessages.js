@@ -42,9 +42,8 @@ async function saveMessage(payload) {
       const lastMessage = result1[0]._id;
       const senderId = result1[0].sender;
       const recipientId = result1[0].recipient;
-      const result2 = await ChatModel.findOneAndUpdate({ $and: [{ sender: senderId }, { recipient: recipientId }] }, { lastMessage }, { upsert: true });
-
-      if (result1.length > 0 && result2) {
+      await ChatModel.findOneAndUpdate({ $and: [{ sender: senderId }, { recipient: recipientId }] }, { lastMessage }, { upsert: true });
+      if (result1) {
         const message = {
           sender,
           recipient,
